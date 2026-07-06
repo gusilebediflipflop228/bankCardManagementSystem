@@ -5,10 +5,14 @@ Backend-приложение на Java (Spring Boot) для управления
 ## Технологии
 ![Java](https://img.shields.io/badge/java-21-blue?logo=java)
 ![Spring Boot](https://img.shields.io/badge/spring%20boot-4.1.0-brightgreen?logo=springboot)
+![Spring Security](https://img.shields.io/badge/security-JWT-red?logo=springsecurity)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-latest-blue?logo=postgresql)
-![Docker](https://img.shields.io/badge/docker-compose-blue?logo=docker)
-![JWT](https://img.shields.io/badge/security-JWT-red?logo=jsonwebtokens)
+![Spring Data JPA](https://img.shields.io/badge/data-JPA-blue?logo=hibernate)
 ![Liquibase](https://img.shields.io/badge/liquibase-migration-red?logo=liquibase)
+![JUnit 5](https://img.shields.io/badge/junit-5-green?logo=junit5)
+![Mockito](https://img.shields.io/badge/mockito-testing-orange?logo=mockito)
+![Docker](https://img.shields.io/badge/docker-container-blue?logo=docker)
+![OpenAPI](https://img.shields.io/badge/API-Swagger-green?logo=swagger)
 ![Swagger](https://img.shields.io/badge/api-OpenAPI-green?logo=swagger)
 
 - Java 21, Spring Boot 4.1.0
