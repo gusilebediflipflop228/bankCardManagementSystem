@@ -1,1 +1,468 @@
-# Здесь будет OpenAPI описание всех доступных эндпоинтов и моделей данных.
+openapi: 3.0.3
+info:
+  title: Bank Card Management API
+  description: REST API для управления банковскими картами
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+security:
+  - Bearer JWT: []
+
+paths:
+  /auth/register:
+    post:
+      tags: [Аутентификация]
+      summary: Регистрация нового пользователя
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Пользователь зарегистрирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          description: Пользователь уже существует
+        '400':
+          description: Ошибка валидации
+
+  /auth/login:
+    post:
+      tags: [Аутентификация]
+      summary: Вход в систему
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Вход выполнен успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Неверные учётные данные
+
+  /api/users:
+    get:
+      tags: [Пользователи]
+      summary: Получить всех пользователей
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Список пользователей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse_UserResponse'
+    post:
+      tags: [Пользователи]
+      summary: Создать пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: Пользователь создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /api/users/{id}:
+    get:
+      tags: [Пользователи]
+      summary: Получить пользователя по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Пользователь
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: Пользователь не найден
+    put:
+      tags: [Пользователи]
+      summary: Обновить пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Пользователь обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    delete:
+      tags: [Пользователи]
+      summary: Удалить пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Пользователь удалён
+
+  /api/cards:
+    get:
+      tags: [Карты]
+      summary: Получить карты
+      description: ADMIN — все карты, USER — свои. Фильтр по статусу.
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/CardStatus'
+      responses:
+        '200':
+          description: Список карт
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse_CardResponse'
+    post:
+      tags: [Карты]
+      summary: Создать карту (ADMIN)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardCreateRequest'
+      responses:
+        '201':
+          description: Карта создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+
+  /api/cards/{id}:
+    get:
+      tags: [Карты]
+      summary: Получить карту по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Карта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        '404':
+          description: Карта не найдена
+    delete:
+      tags: [Карты]
+      summary: Удалить карту (ADMIN)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Карта удалена
+
+  /api/cards/{id}/block:
+    put:
+      tags: [Карты]
+      summary: Заблокировать карту
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Карта заблокирована
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+
+  /api/cards/{id}/activate:
+    put:
+      tags: [Карты]
+      summary: Активировать карту (ADMIN)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Карта активирована
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+
+  /api/cards/{id}/balance:
+    get:
+      tags: [Карты]
+      summary: Получить баланс карты (владелец)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Баланс
+          content:
+            application/json:
+              schema:
+                type: number
+                format: decimal
+
+  /api/transfers:
+    post:
+      tags: [Переводы]
+      summary: Перевод между картами (только свои)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        '200':
+          description: Перевод выполнен
+        '400':
+          description: Ошибка перевода
+
+components:
+  securitySchemes:
+    Bearer JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        password:
+          type: string
+          minLength: 6
+      required: [username, password]
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required: [username, password]
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+
+    UserCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+      required: [username, password, role]
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+
+    Role:
+      type: string
+      enum: [ADMIN, USER]
+
+    CardResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        maskedNumber:
+          type: string
+          example: "**** **** **** 1234"
+        cardholder:
+          type: string
+        expiryDate:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/CardStatus'
+        balance:
+          type: number
+          format: decimal
+        ownerId:
+          type: integer
+          format: int64
+
+    CardCreateRequest:
+      type: object
+      properties:
+        cardNumber:
+          type: string
+          pattern: '^\d{16}$'
+          example: "1234567890123456"
+        cardholder:
+          type: string
+        expiryDate:
+          type: string
+          format: date
+        ownerId:
+          type: integer
+          format: int64
+      required: [cardNumber, cardholder, expiryDate, ownerId]
+
+    CardStatus:
+      type: string
+      enum: [ACTIVE, BLOCKED, EXPIRED]
+
+    TransferRequest:
+      type: object
+      properties:
+        fromCardId:
+          type: integer
+          format: int64
+        toCardId:
+          type: integer
+          format: int64
+        amount:
+          type: number
+          format: decimal
+          minimum: 0.01
+      required: [fromCardId, toCardId, amount]
+
+    PageResponse_UserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+
+    PageResponse_CardResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardResponse'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer

@@ -1,105 +1,131 @@
-<h1>🚀 Разработка Системы Управления Банковскими Картами</h1>
+# Bank Card Management System
 
-<h2>📁 Стартовая структура</h2>
-  <p>
-    Проектная структура с директориями и описательными файлами (<code>README Controller.md</code>, <code>README Service.md</code> и т.д.) уже подготовлена.<br />
-    Все реализации нужно добавлять <strong>в соответствующие директории</strong>.
-  </p>
-  <p>
-    После завершения разработки <strong>временные README-файлы нужно удалить</strong>, чтобы они не попадали в итоговую сборку.
-  </p>
-  
-<h2>📝 Описание задачи</h2>
-  <p>Разработать backend-приложение на Java (Spring Boot) для управления банковскими картами:</p>
-  <ul>
-    <li>Создание и управление картами</li>
-    <li>Просмотр карт</li>
-    <li>Переводы между своими картами</li>
-  </ul>
+Backend-приложение на Java (Spring Boot) для управления банковскими картами.
 
-<h2>💳 Атрибуты карты</h2>
-  <ul>
-    <li>Номер карты (зашифрован, отображается маской: <code>**** **** **** 1234</code>)</li>
-    <li>Владелец</li>
-    <li>Срок действия</li>
-    <li>Статус: Активна, Заблокирована, Истек срок</li>
-    <li>Баланс</li>
-  </ul>
+## Технологии
 
-<h2>🧾 Требования</h2>
+- Java 21, Spring Boot 4.1.0
+- Spring Security + JWT
+- Spring Data JPA + PostgreSQL
+- Liquibase (миграции БД)
+- Swagger UI / OpenAPI
+- Docker Compose
+- Lombok
 
-<h3>✅ Аутентификация и авторизация</h3>
-  <ul>
-    <li>Spring Security + JWT</li>
-    <li>Роли: <code>ADMIN</code> и <code>USER</code></li>
-  </ul>
+## Быстрый старт
 
-<h3>✅ Возможности</h3>
-<strong>Администратор:</strong>
-  <ul>
-    <li>Создаёт, блокирует, активирует, удаляет карты</li>
-    <li>Управляет пользователями</li>
-    <li>Видит все карты</li>
-  </ul>
+### 1. Клонировать репозиторий
 
-<strong>Пользователь:</strong>
-  <ul>
-    <li>Просматривает свои карты (поиск + пагинация)</li>
-    <li>Запрашивает блокировку карты</li>
-    <li>Делает переводы между своими картами</li>
-    <li>Смотрит баланс</li>
-  </ul>
+```bash
+git clone <url>
+cd bank_rest
+```
 
-<h3>✅ API</h3>
-  <ul>
-    <li>CRUD для карт</li>
-    <li>Переводы между своими картами</li>
-    <li>Фильтрация и постраничная выдача</li>
-    <li>Валидация и сообщения об ошибках</li>
-  </ul>
+### 2. Настроить переменные окружения
 
-<h3>✅ Безопасность</h3>
-  <ul>
-    <li>Шифрование данных</li>
-    <li>Ролевой доступ</li>
-    <li>Маскирование номеров карт</li>
-  </ul>
+```bash
+cp .env.example .env
+```
 
-<h3>✅ Работа с БД</h3>
-  <ul>
-    <li>PostgreSQL или MySQL</li>
-    <li>Миграции через Liquibase (<code>src/main/resources/db/migration</code>)</li>
-  </ul>
+Отредактируйте `.env` — задайте пароли и JWT_SECRET.
 
-<h3>✅ Документация</h3>
-  <ul>
-    <li>Swagger UI / OpenAPI — <code>docs/openapi.yaml</code></li>
-    <li><code>README.md</code> с инструкцией запуска</li>
-  </ul>
+### 3. Запуск (Docker — рекомендуется)
 
-<h3>✅ Развёртывание и тестирование</h3>
-  <ul>
-    <li>Docker Compose для dev-среды</li>
-    <li>Liquibase миграции</li>
-    <li>Юнит-тесты ключевой бизнес-логики</li>
-  </ul>
+```bash
+docker-compose up --build
+```
 
-<h2>📊 Оценка</h2>
-  <ul>
-    <li>Соответствие требованиям</li>
-    <li>Чистота архитектуры и кода</li>
-    <li>Безопасность</li>
-    <li>Обработка ошибок</li>
-    <li>Покрытие тестами</li>
-    <li>ООП и уровни абстракции</li>
-  </ul>
+Это соберёт образ приложения, поднимет PostgreSQL и приложение.
+Приложение будет доступно на `http://localhost:8080`.
 
-<h2>💡 Технологии</h2>
-  <p>
-    Java 17+, Spring Boot, Spring Security, Spring Data JPA, PostgreSQL/MySQL, Liquibase, Docker, JWT, Swagger (OpenAPI)
-  </p>
+### 4. Запуск (локально, без Docker)
 
-<h2> 📤 Формат сдачи</h2>
-<p>
-Весь код и изменения принимаются только через git-репозиторий с открытым доступом к проекту. Отправка файлов в любом виде не принимается.
-  </p>
+Если PostgreSQL уже запущен локально:
+
+```bash
+docker-compose up -d postgres   # только БД
+./mvnw spring-boot:run          # приложение
+```
+
+### 5. Swagger UI
+
+Откройте в браузере: `http://localhost:8080/swagger-ui.html`
+
+## API Endpoints
+
+### Аутентификация
+
+| Метод | Описание |
+|-------|----------|
+| `POST /auth/register` | Регистрация нового пользователя |
+| `POST /auth/login` | Вход, получение JWT-токена |
+
+### Пользователи (только ADMIN)
+
+| Метод | Описание |
+|-------|----------|
+| `GET /api/users` | Список пользователей |
+| `GET /api/users/{id}` | Пользователь по ID |
+| `POST /api/users` | Создать пользователя |
+| `DELETE /api/users/{id}` | Удалить пользователя |
+
+### Карты
+
+| Метод | Описание |
+|-------|----------|
+| `GET /api/cards` | Все карты (ADMIN) / свои карты (USER) |
+| `GET /api/cards/{id}` | Карта по ID |
+| `POST /api/cards` | Создать карту (ADMIN) |
+| `PUT /api/cards/{id}/block` | Заблокировать карту |
+| `PUT /api/cards/{id}/activate` | Активировать карту (ADMIN) |
+| `DELETE /api/cards/{id}` | Удалить карту (ADMIN) |
+| `GET /api/cards/{id}/balance` | Баланс карты (владелец) |
+
+### Переводы (только USER)
+
+| Метод | Описание |
+|-------|----------|
+| `POST /api/transfers` | Перевод между своими картами |
+
+## Пример использования
+
+```bash
+# Регистрация
+curl -X POST http://localhost:8080/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"password123"}'
+
+# Вход
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"password123"}'
+# Вернёт: {"token":"eyJhbGci..."}
+
+# Создание карты (с JWT-токеном)
+curl -X POST http://localhost:8080/api/cards \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"cardNumber":"1234567890123456","cardholder":"Ivan Ivanov","expiryDate":"2028-12-31","ownerId":1}'
+```
+
+## Тесты
+
+```bash
+./mvnw test
+```
+
+## Структура проекта
+
+```
+src/main/java/api/bank/
+  ├── config/          — Конфигурация (CORS, OpenAPI)
+  ├── controller/      — REST-контроллеры
+  ├── dto/             — Объекты передачи данных
+  ├── entity/          — JPA-сущности (User, Card, Role, CardStatus)
+  ├── exception/       — Обработка ошибок
+  ├── repository/      — Spring Data JPA репозитории
+  ├── security/        — JWT, фильтры, SecurityConfig
+  ├── service/         — Бизнес-логика
+  └── util/            — Утилиты (шифрование, маскирование)
+```
+    

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: changeset/001-init-schema.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset/002-add-version-column.yaml
+      relativeToChangelogFile: true
