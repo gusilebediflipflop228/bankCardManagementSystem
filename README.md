@@ -3,6 +3,13 @@
 Backend-приложение на Java (Spring Boot) для управления банковскими картами.
 
 ## Технологии
+![Java](https://img.shields.io/badge/java-21-blue?logo=java)
+![Spring Boot](https://img.shields.io/badge/spring%20boot-4.1.0-brightgreen?logo=springboot)
+![PostgreSQL](https://img.shields.io/badge/postgresql-latest-blue?logo=postgresql)
+![Docker](https://img.shields.io/badge/docker-compose-blue?logo=docker)
+![JWT](https://img.shields.io/badge/security-JWT-red?logo=jsonwebtokens)
+![Liquibase](https://img.shields.io/badge/liquibase-migration-red?logo=liquibase)
+![Swagger](https://img.shields.io/badge/api-OpenAPI-green?logo=swagger)
 
 - Java 21, Spring Boot 4.1.0
 - Spring Security + JWT
