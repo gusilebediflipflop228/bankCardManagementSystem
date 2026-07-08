@@ -129,7 +129,7 @@ curl -X POST http://localhost:8080/api/cards \
 
 ```
 src/main/java/api/bank/
-  ├── config/          — Конфигурация (CORS, OpenAPI)
+  ├── config/          — Конфигурация (OpenAPI)
   ├── controller/      — REST-контроллеры
   ├── dto/             — Объекты передачи данных
   ├── entity/          — JPA-сущности (User, Card, Role, CardStatus)
